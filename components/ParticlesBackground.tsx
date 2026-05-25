@@ -1,29 +1,52 @@
 "use client";
 
-import Particles from "react-tsparticles";
-import { loadFull } from "tsparticles";
-import type { Engine } from "tsparticles-engine";
+import { useEffect, useState } from "react";
+
+import Particles from "@tsparticles/react";
+
+import { initParticlesEngine } from "@tsparticles/react";
+
+import { loadSlim } from "@tsparticles/slim";
 
 export default function ParticlesBackground() {
 
-  const particlesInit = async (engine: Engine) => {
-    await loadFull(engine);
-  };
+  const [init, setInit] =
+    useState(false);
+
+  useEffect(() => {
+
+    initParticlesEngine(async (engine) => {
+
+      await loadSlim(engine);
+
+    }).then(() => {
+
+      setInit(true);
+
+    });
+
+  }, []);
+
+  if (!init) return null;
 
   return (
+
     <Particles
+
       id="tsparticles"
-      init={particlesInit}
+
       options={{
+
         background: {
           color: {
-            value: "#000000",
+            value: "transparent",
           },
         },
 
         fpsLimit: 120,
 
         particles: {
+
           color: {
             value: "#22c55e",
           },
@@ -55,7 +78,7 @@ export default function ParticlesBackground() {
           },
 
           opacity: {
-            value: 0.4,
+            value: 0.3,
           },
 
           shape: {
@@ -63,13 +86,18 @@ export default function ParticlesBackground() {
           },
 
           size: {
-            value: { min: 1, max: 4 },
+            value: {
+              min: 1,
+              max: 4,
+            },
           },
         },
 
         detectRetina: true,
       }}
-      className="absolute inset-0"
+
+      className="absolute inset-0 -z-10"
+
     />
   );
 }
