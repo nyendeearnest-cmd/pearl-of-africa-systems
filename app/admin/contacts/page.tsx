@@ -24,7 +24,7 @@ export default async function ContactsPage() {
 
         <div className="space-y-6">
 
-          {contacts.map((contact) => (
+         {contacts.map((contact: any) => (
 
             <div
               key={contact.id}
