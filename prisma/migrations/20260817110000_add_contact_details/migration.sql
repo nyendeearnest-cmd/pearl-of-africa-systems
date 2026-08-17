@@ -1,0 +1,3 @@
+ALTER TABLE "Contact"
+ADD COLUMN "phone" TEXT,
+ADD COLUMN "service" TEXT;

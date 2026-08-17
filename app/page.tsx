@@ -15,32 +15,26 @@ import Chatbot from "@/components/Chatbot";
 
 export default function Home() {
   return (
-    <main className="bg-black text-white overflow-x-hidden">
-<PageLoader />
+    <>
+      <PageLoader />
       <ScrollProgress />
 
       <Navbar />
 
-      <Hero />
-
-      <Services />
-
-      <About />
-
-      <Stats />
-
-      <Portfolio />
-
-      <Testimonials />
-
-      <Team />
-
-      <Contact />
+      <main>
+        <Hero />
+        <Services />
+        <About />
+        <Stats />
+        <Portfolio />
+        <Testimonials />
+        <Team />
+        <Contact />
+      </main>
 
       <Footer />
 
       <Chatbot />
-
-    </main>
+    </>
   );
 }
