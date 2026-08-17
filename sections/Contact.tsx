@@ -27,13 +27,14 @@ export default function Contact() {
     e.preventDefault();
 
     if (!formData.name || !formData.email || !formData.message) {
-      toast.error("Please fill in all required fields.");
+      toast.error("Please fill in your name, email and message.");
       return;
     }
 
-    try {
-      setLoading(true);
+    setLoading(true);
 
+    try {
+      // Save the inquiry to the database
       const response = await fetch("/api/contacts", {
         method: "POST",
         headers: {
@@ -42,24 +43,50 @@ export default function Contact() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success("Message sent successfully!");
-
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          service: "",
-          message: "",
-        });
-      } else {
-        toast.error(data.error || "Something went wrong.");
+      if (!response.ok) {
+        throw new Error("Failed to save contact");
       }
+
+      // Prepare WhatsApp message
+      const whatsappMessage = `
+Hello Pearl of Africa Systems,
+
+I would like to make an inquiry.
+
+Name: ${formData.name}
+Email: ${formData.email}
+Phone: ${formData.phone || "Not provided"}
+Service: ${formData.service || "Not specified"}
+
+Message:
+${formData.message}
+
+Thank you.
+      `.trim();
+
+      const encodedMessage = encodeURIComponent(whatsappMessage);
+
+      const whatsappLink = `https://wa.me/256706836522?text=${encodedMessage}`;
+
+      toast.success("Inquiry saved. Opening WhatsApp...");
+
+      // Clear form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        service: "",
+        message: "",
+      });
+
+      // Open WhatsApp
+      window.open(whatsappLink, "_blank");
     } catch (error) {
-      console.error(error);
-      toast.error("Unable to send message. Please try again.");
+      console.error("Contact form error:", error);
+
+      toast.error(
+        "Something went wrong. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -68,194 +95,186 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="bg-zinc-950 text-white py-28 px-6"
+      className="bg-zinc-950 text-white py-24 px-6"
     >
-      <Toaster position="top-right" />
+      <Toaster />
 
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-4xl mx-auto">
 
-        {/* Heading */}
-        <div className="text-center mb-16">
+        {/* Header */}
+        <div className="text-center mb-12">
 
           <p className="text-green-400 font-semibold tracking-widest mb-4">
             GET IN TOUCH
           </p>
 
-          <h2 className="text-4xl md:text-6xl font-black">
-            Let&apos;s Build Something Amazing
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Contact Us
           </h2>
 
-          <p className="text-gray-400 text-lg mt-6 max-w-2xl mx-auto">
-            Tell us what you need and our team will get back to you
-            as soon as possible.
+          <p className="text-gray-400 text-lg">
+            Tell us what you need and we will get back to you.
           </p>
 
         </div>
 
-        {/* Form */}
+        {/* Contact Form */}
         <form
           onSubmit={handleSubmit}
-          className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 md:p-10 space-y-6"
+          className="space-y-6 bg-zinc-900 border border-zinc-800 rounded-3xl p-6 md:p-10"
         >
 
-          {/* Name + Email */}
-          <div className="grid md:grid-cols-2 gap-6">
+          {/* Name */}
+          <div>
+            <label className="block mb-2 text-sm font-medium">
+              Full Name
+            </label>
 
-            <div>
-              <label className="block text-sm text-gray-300 mb-2">
-                Full Name *
-              </label>
-
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full p-4 rounded-xl bg-black border border-zinc-800 focus:border-green-500 focus:outline-none transition"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm text-gray-300 mb-2">
-                Email Address *
-              </label>
-
-              <input
-                type="email"
-                name="email"
-                placeholder="you@example.com"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full p-4 rounded-xl bg-black border border-zinc-800 focus:border-green-500 focus:outline-none transition"
-              />
-            </div>
-
+            <input
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className="w-full p-4 rounded-xl bg-black border border-zinc-800 focus:border-green-500 outline-none transition"
+            />
           </div>
 
-          {/* Phone + Service */}
-          <div className="grid md:grid-cols-2 gap-6">
+          {/* Email */}
+          <div>
+            <label className="block mb-2 text-sm font-medium">
+              Email Address
+            </label>
 
-            <div>
-              <label className="block text-sm text-gray-300 mb-2">
-                Phone Number
-              </label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full p-4 rounded-xl bg-black border border-zinc-800 focus:border-green-500 outline-none transition"
+            />
+          </div>
 
-              <input
-                type="tel"
-                name="phone"
-                placeholder="+256 700 000 000"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full p-4 rounded-xl bg-black border border-zinc-800 focus:border-green-500 focus:outline-none transition"
-              />
-            </div>
+          {/* Phone */}
+          <div>
+            <label className="block mb-2 text-sm font-medium">
+              Phone Number
+            </label>
 
-            <div>
-              <label className="block text-sm text-gray-300 mb-2">
-                Service Required
-              </label>
+            <input
+              type="tel"
+              name="phone"
+              placeholder="e.g. 0700000000"
+              value={formData.phone}
+              onChange={handleChange}
+              className="w-full p-4 rounded-xl bg-black border border-zinc-800 focus:border-green-500 outline-none transition"
+            />
+          </div>
 
-              <select
-                name="service"
-                value={formData.service}
-                onChange={handleChange}
-                className="w-full p-4 rounded-xl bg-black border border-zinc-800 focus:border-green-500 focus:outline-none transition"
-              >
+          {/* Service */}
+          <div>
+            <label className="block mb-2 text-sm font-medium">
+              Service Required
+            </label>
 
-                <option value="" className="bg-zinc-900">
-                  Select a service
-                </option>
+            <select
+              name="service"
+              value={formData.service}
+              onChange={handleChange}
+              className="w-full p-4 rounded-xl bg-black border border-zinc-800 focus:border-green-500 outline-none transition"
+            >
+              <option value="">
+                Select a service
+              </option>
 
-                <option value="Computer Training">
-                  Computer Training
-                </option>
+              <option value="Computer Training">
+                Computer Training
+              </option>
 
-                <option value="Graphic Design & Branding">
-                  Graphic Design & Branding
-                </option>
+              <option value="Graphic Design & Branding">
+                Graphic Design & Branding
+              </option>
 
-                <option value="IT Support & Maintenance">
-                  IT Support & Maintenance
-                </option>
+              <option value="IT Support & Maintenance">
+                IT Support & Maintenance
+              </option>
 
-                <option value="Computer Repair">
-                  Computer Repair
-                </option>
+              <option value="Computer Repair">
+                Computer Repair
+              </option>
 
-                <option value="Internship Training">
-                  Internship Training
-                </option>
+              <option value="Internship Training">
+                Internship Training
+              </option>
 
-                <option value="Networking">
-                  Networking
-                </option>
+              <option value="Networking">
+                Networking
+              </option>
 
-                <option value="Internet Services">
-                  Internet Services
-                </option>
+              <option value="Internet Services">
+                Internet Services
+              </option>
 
-                <option value="Camera Installation">
-                  Camera Installation
-                </option>
+              <option value="Camera Installation">
+                Camera Installation
+              </option>
 
-                <option value="Reports & Proposal Generation">
-                  Reports & Proposal Generation
-                </option>
+              <option value="Reports & Proposal Generation">
+                Reports & Proposal Generation
+              </option>
 
-                <option value="Hardware Replacement">
-                  Hardware Replacement
-                </option>
+              <option value="Hardware Replacement">
+                Hardware Replacement
+              </option>
 
-                <option value="Web Development">
-                  Web Development
-                </option>
+              <option value="Web Development">
+                Web Development
+              </option>
 
-                <option value="Database Systems">
-                  Database Systems
-                </option>
+              <option value="Database Systems">
+                Database Systems
+              </option>
 
-                <option value="Cybersecurity">
-                  Cybersecurity
-                </option>
+              <option value="Cybersecurity">
+                Cybersecurity
+              </option>
 
-                <option value="Artificial Intelligence">
-                  Artificial Intelligence
-                </option>
+              <option value="Artificial Intelligence">
+                Artificial Intelligence
+              </option>
 
-              </select>
-            </div>
-
+            </select>
           </div>
 
           {/* Message */}
           <div>
-
-            <label className="block text-sm text-gray-300 mb-2">
-              Message *
+            <label className="block mb-2 text-sm font-medium">
+              Message
             </label>
 
             <textarea
               name="message"
-              placeholder="Tell us about your project or what you need help with..."
-              rows={7}
+              placeholder="Tell us what you need..."
+              rows={6}
               value={formData.message}
               onChange={handleChange}
               required
-              className="w-full p-4 rounded-xl bg-black border border-zinc-800 focus:border-green-500 focus:outline-none transition resize-none"
+              className="w-full p-4 rounded-xl bg-black border border-zinc-800 focus:border-green-500 outline-none transition resize-none"
             />
-
           </div>
 
           {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full md:w-auto bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition px-10 py-4 rounded-xl text-black font-bold"
+            className="w-full bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold py-4 rounded-xl transition-all duration-300 hover:scale-[1.02]"
           >
-            {loading ? "Sending..." : "Send Message"}
+            {loading
+              ? "Opening WhatsApp..."
+              : "Send Inquiry on WhatsApp"}
           </button>
 
         </form>

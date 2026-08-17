@@ -12,6 +12,10 @@ export default function Footer() {
           © 2026 All Rights Reserved
         </p>
 
+        <p className="text-gray-400 mt-4 md:mt-0">
+          Tel: 0706836522
+        </p>
+
       </div>
     </footer>
   );

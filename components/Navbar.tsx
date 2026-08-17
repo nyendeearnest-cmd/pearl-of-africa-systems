@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, MessageCircle } from "lucide-react";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -10,6 +10,14 @@ export default function Navbar() {
   const closeMenu = () => {
     setOpen(false);
   };
+
+  const whatsappNumber = "256706836522";
+
+  const whatsappMessage = encodeURIComponent(
+    "Hello Pearl of Africa Systems, I would like to inquire about your services."
+  );
+
+  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-black/70 backdrop-blur-xl border-b border-zinc-800">
@@ -64,6 +72,17 @@ export default function Navbar() {
             Contact
           </a>
 
+          {/* WhatsApp */}
+          <a
+            href={whatsappLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-black px-5 py-3 rounded-xl font-semibold transition hover:scale-105"
+          >
+            <MessageCircle size={20} />
+            WhatsApp
+          </a>
+
         </nav>
 
         {/* Mobile Menu Button */}
@@ -116,6 +135,18 @@ export default function Navbar() {
             className="block hover:text-green-400 transition"
           >
             Contact
+          </a>
+
+          {/* Mobile WhatsApp */}
+          <a
+            href={whatsappLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={closeMenu}
+            className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-black px-5 py-4 rounded-xl font-semibold transition"
+          >
+            <MessageCircle size={22} />
+            Chat on WhatsApp
           </a>
 
         </div>
