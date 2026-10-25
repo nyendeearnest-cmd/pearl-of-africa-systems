@@ -1,39 +1,31 @@
-import "./globals.css";
 
-import type { Metadata }
-from "next";
+import "./globals.css";
+import type { Metadata } from "next";
+
+const siteUrl = "https://pearl-of-africa-systems-za4t.vercel.app";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
 
-  title:
-    "Pearl of Africa Systems",
+  title: "Pearl of Africa Systems",
 
   description:
     "Pearl of Africa Systems builds intelligent software, cybersecurity systems, AI solutions and enterprise technology for Africa.",
 
   keywords: [
-
     "Software Company Uganda",
-
     "Cybersecurity Uganda",
-
     "AI Systems Africa",
-
     "Pearl of Africa Systems",
-
     "Web Development Uganda",
-
     "Enterprise Software",
-
     "Cloud Computing Uganda",
-
     "Software Development Africa",
   ],
 
   authors: [
     {
-      name:
-        "Pearl of Africa Systems",
+      name: "Pearl of Africa Systems",
     },
   ],
 
@@ -42,73 +34,40 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-
-    title:
-      "Pearl of Africa Systems",
-
+    title: "Pearl of Africa Systems",
     description:
-      "Building Africa’s digital future through intelligent systems and enterprise technology.",
-
-    url:
-      "https://yourdomain.com",
-
-    siteName:
-      "Pearl of Africa Systems",
-
+      "Building Africa's digital future through intelligent systems and enterprise technology.",
+    url: siteUrl,
+    siteName: "Pearl of Africa Systems",
     images: [
       {
-        url:
-          "/logo.png",
-
+        url: "/logo.png",
         width: 1200,
-
         height: 630,
-
-        alt:
-          "Pearl of Africa Systems",
+        alt: "Pearl of Africa Systems",
       },
     ],
-
-    locale:
-      "en_US",
-
-    type:
-      "website",
+    locale: "en_US",
+    type: "website",
   },
 
   twitter: {
-
-    card:
-      "summary_large_image",
-
-    title:
-      "Pearl of Africa Systems",
-
+    card: "summary_large_image",
+    title: "Pearl of Africa Systems",
     description:
-      "Building Africa’s digital future through intelligent systems.",
-
-    images: [
-      "/logo.png",
-    ],
+      "Building Africa's digital future through intelligent systems.",
+    images: ["/logo.png"],
   },
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
-
+}>) {
   return (
-
     <html lang="en">
-
-      <body className="bg-black text-white">
-
-        {children}
-
-      </body>
-
+      <body className="bg-black text-white">{children}</body>
     </html>
   );
 }
